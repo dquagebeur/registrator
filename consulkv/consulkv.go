@@ -46,7 +46,7 @@ func (r *ConsulKVAdapter) Ping() error {
 }
 
 func (r *ConsulKVAdapter) Register(service *bridge.Service) error {
-	path := r.path[1:] + "/" + service.Name + "/" + service.ID
+	path := r.path[1:] + "/" + service.Name + "/upstreams/" + service.ID
 	port := strconv.Itoa(service.Port)
 	addr := net.JoinHostPort(service.IP, port)
 	_, err := r.client.KV().Put(&consulapi.KVPair{Key: path, Value: []byte(addr)}, nil)
@@ -57,7 +57,7 @@ func (r *ConsulKVAdapter) Register(service *bridge.Service) error {
 }
 
 func (r *ConsulKVAdapter) Deregister(service *bridge.Service) error {
-	path := r.path[1:] + "/" + service.Name + "/" + service.ID
+	path := r.path[1:] + "/" + service.Name + "/upstreams/" + service.ID
 	_, err := r.client.KV().Delete(path, nil)
 	if err != nil {
 		log.Println("consulkv: failed to deregister service:", err)
